@@ -1,8 +1,4 @@
-# **Finding Lane Lines on the Road** 
-
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
+# **Finding Lane Lines on the Road**
 
 ---
 
@@ -15,7 +11,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
+[image1]: ./test_images_output/grayscale.png "Grayscale"
+[image2]: ./test_images_output/blur.png "Blur"
+[image3]: ./test_images_output/canny.png "Canny"
+[image4]: ./test_images_output/mask.png "Mask"
+[image5]: ./test_images_output/hough.png "Hough"
+[image6]: ./test_images_output/pipeline1.png "Pipeline1"
+[image7]: ./test_images_output/pipeline2.png "Pipeline2"
 
 ---
 
@@ -23,25 +25,52 @@ The goals / steps of this project are the following:
 
 ### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-My pipeline consisted of 5 steps. First, I converted the images to grayscale, then I .... 
+#### The initial draw_line(), which draw several line on the image
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+My pipeline consisted of 5 steps.
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
+1) I converted the images to grayscale
 
-![alt text][image1]
+![Grayscale][image1]
+
+2) I used gaussian filter to the grayscale image into blur image, which can suppress noise and can improve the effect when we do edges detection.
+
+![Blur][image2]
+
+
+3) I used Canny Edge Detection to get the raw line
+
+![Canny][image3]
+
+4) Then, I created a polygon mask region which is only covered the road to filter out the lines outside road.
+
+![Mask][image4]
+
+5) Use Hough algorithm to get solid lines
+
+![Hough][image5]
+
+After that, I draw the line on the image, as following
+
+![Pipeline1][image6]
+
+#### The improved version of draw_line2(), which draw only single line on the image
+
+In order to draw a single on on each side, I grouped the lines into the left group and right group, then fit them into the left line and right line. Then draw them on the image. The code cell of this `draw_line2()` in `#3`. And the final result as follow:
+
+![Pipeline2][image7]
 
 
 ### 2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when ... 
+One potential shortcoming would be what would happen when there are only few strips are visible, the slope of the lane is identified in an incorrect way.
 
-Another shortcoming could be ...
+Another shortcoming could be the region of interested is very sensible to position of the camera, many parameters have to be fine tuned when the position of camera changed.
 
 
 ### 3. Suggest possible improvements to your pipeline
 
-A possible improvement would be to ...
+A possible improvement would be to solve the above shortcoming.
 
-Another potential improvement could be to ...
+And my implementation failed to handle the challenge video. When the lane line is not a straight line, may need some method to generate curve line.
